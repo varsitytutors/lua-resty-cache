@@ -41,7 +41,6 @@ function _M.run(self)
     -- ngx.log(loglevel, "[LUA], cache key", key, ", ttl: ", ttl)
     -- stale time, need update the cache
     if ttl < stale then
-        ngx.var['http_x_cache'] = 'miss'
         if method == "POST" or method == "PUT" then ngx.req.read_body() end
         -- cache missing, no need to using srcache_fetch, go to backend server, and store new cache
         -- if redis server version is 2.8- can not return -2 !!!!!!
@@ -65,8 +64,6 @@ function _M.run(self)
                 ngx.timer.at(0, request, http, ngx.var.request_uri, self.cache_server_port, method, ngx.req.get_headers(), ngx.req.get_body_data(), self.cache_skip_fetch)
             end
         end
-    else
-        ngx.var['http_x_cache'] = 'hit'
     end
 end
 
